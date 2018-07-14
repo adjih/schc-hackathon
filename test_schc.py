@@ -9,17 +9,19 @@ from schc_param import *
 import schc_fragment_sender as sfs
 from debug_print import *
 from schc_fragment_ruledb import schc_fragment_ruledb
+try: import socket
+except: import usocket as socket
+try: import time
+except: import utime as time
 
-impl_name = sys.implementation.name
-
-print("Running schc-test on micropython-on-unix (%s)" % impl_name)
 
 # ./test-frag-client-udp.py 127.0.0.1 9999 --context-file="example-rule/context-001.json" --rule-file="example-rule/fragment-rule-002.json" --dtag=3 -I test/message.txt --l2-size=6 -dd
 
 #---------------------------------------------------------------------------
 # copied from schc-test/test-frag-client-udp.py (and modified)
         
-def schc_sender(msg):
+def schc_fragmenter_send(msg, s, opt):
+    """Send message on socket s, fragmenting it as necessary"""
     assert type(msg) == bytearray # avoid compatibility problems
     debug_print(2, "message:", msg)
     # XXX assuming that the rule_id is not changed in a session.
@@ -90,15 +92,33 @@ def schc_sender(msg):
                     debug_print(0, traceback.format_exc())
 
         #XXX:
-        #time.sleep(opt.interval)
-        print("time.sleep")
-        
+        time.sleep(opt.interval)
+
+
+#---------------------------------------------------------------------------
+
+def do_fragmenter_send(packet_str, opt):
+    global frr
+    frdb = schc_fragment_ruledb()
+    cid = frdb.load_context_json_file(opt.context_file)
+    rid = frdb.load_json_file(cid, opt.rule_file)
+    frr = frdb.get_runtime_rule(cid, rid)
+
+    if impl_name == "micropython":
+        packet = bytearray(packet_str)
+    else: packet = bytearray(packet_str, "utf-8")
+
+    sd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    schc_fragmenter_send(packet, sd, opt)
 
 #---------------------------------------------------------------------------
 # Options
 
 class empty_class:
     pass
+
+#--------------------------------------------------
+
 opt = empty_class()
 
 opt.context_file = "schc-test/example-rule/context-001.json"
@@ -106,23 +126,18 @@ opt.rule_file = "schc-test/example-rule/fragment-rule-002.json"
 opt.l2_size = 6
 opt.dtag = 2
 opt.func_packet_loss = None
-
-
-
-#--------------------------------------------------
-
+opt.interval = 1
 debug_set_level(2)
 
-frdb = schc_fragment_ruledb()
-cid = frdb.load_context_json_file(opt.context_file)
-rid = frdb.load_json_file(cid, opt.rule_file)
-frr = frdb.get_runtime_rule(cid, rid)
+impl_name = sys.implementation.name
 
-packet_str = 10*"1234567890"
-if impl_name == "micropython":
-    packet = bytearray(packet_str)
-else: packet = bytearray(packet_str, "utf-8")
+print("Python implementation: %s" % sys.implementation)
+packet = "0123456789" * 10
 
-schc_sender(packet)
+if "send" in sys.argv:
+    do_fragmenter_send(packet, opt)
+elif "recv" in sys.argv:
+    do_fragmenter_recv(packet, opt)
+else: print("Not doing anything, please pass argument 'send' or 'recv'")
 
 #---------------------------------------------------------------------------

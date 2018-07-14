@@ -32,9 +32,14 @@ native-build:
 	cd ${M}/ports/unix && make axtls
 	cd ${M}/ports/unix && make V=1
 
-run:
+send:
 	test -e ${M}/ports/unix/micropython || make native-build
-	${M}/ports/unix/micropython test_schc.py
+	${M}/ports/unix/micropython test_schc.py send
+
+recv:
+	test -e ${M}/ports/unix/micropython || make native-build
+	${M}/ports/unix/micropython test_schc.py recv
+
 
 run-micropython:
 	${M}/ports/unix/micropython
