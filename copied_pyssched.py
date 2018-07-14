@@ -3,7 +3,7 @@
 derived from python2.7/sched.py
 '''
 try: import heapq
-except: import copied_heapq
+except: import copied_heapq as heapq
 try: import time
 except: import utime as time
 try: from collections import namedtuple

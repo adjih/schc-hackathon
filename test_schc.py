@@ -19,6 +19,17 @@ import copied_pyssched as ps
 
 # ./test-frag-client-udp.py 127.0.0.1 9999 --context-file="example-rule/context-001.json" --rule-file="example-rule/fragment-rule-002.json" --dtag=3 -I test/message.txt --l2-size=6 -dd
 
+RECV_UDP_ADDRESS = "127.0.0.1"
+RECV_UDP_PORT = 9999
+
+SEND_UDP_ADDRESS = "127.0.0.1"
+SEND_UDP_PORT = 9999
+
+#---------------------------------------------------------------------------
+
+def get_sockaddr(address, port):
+    return socket.getaddrinfo(address, port)[0][-1]
+
 #---------------------------------------------------------------------------
 # copied from schc-test/test-frag-client-udp.py (and modified)
         
@@ -63,8 +74,9 @@ def schc_fragmenter_send(msg, s, opt):
         if opt.func_packet_loss and opt.func_packet_loss() == True:
             debug_print(1, "packet dropped.")
         else:
-            #XXX: s.sendto(tx_obj.packet, server)
             print("SEND:", tx_obj.packet)
+            address = socket.getaddrinfo('127.0.0.1', UDP_PORT)[0][-1]
+            s.sendto(tx_obj.packet, address)
             debug_print(1, "sent  :", tx_obj.dump())
             debug_print(2, "hex   :", tx_obj.full_dump())
     
@@ -93,13 +105,13 @@ def schc_fragmenter_send(msg, s, opt):
                     debug_print(1, "Exception: [%s]" % repr(e))
                     debug_print(0, traceback.format_exc())
 
-        #XXX:
         time.sleep(opt.interval)
 
 #---------------------------------------------------------------------------
 # copied from schc-test/test-frag-server-udp.py (and modified)
 
-def schc_fragmenter_recv(s, opt):
+def schc_fragmenter_recv(s, sched, factory, opt):
+    
     while True:
 
         # execute scheduler and get the number for timeout..
@@ -179,20 +191,24 @@ def do_fragmenter_send(packet_str, opt):
 
 
 def do_fragmenter_recv(opt):
-    global frr
-    frdb = schc_fragment_ruledb()
-    cid = frdb.load_context_json_file(opt.context_file)
-    rid = frdb.load_json_file(cid, opt.rule_file)
-    frr = frdb.get_runtime_rule(cid, rid)
-
-    if impl_name == "micropython":
-        packet = bytearray(packet_str)
-    else: packet = bytearray(packet_str, "utf-8")
-
+    global cid
+    sched = ps.ssched()
+    factory = sfr.defragment_factory(scheduler=sched,
+                                     timer_t1=opt.timer_t1,
+                                     timer_t3=opt.timer_t3,
+                                     timer_t4=opt.timer_t4,
+                                     timer_t5=opt.timer_t5,
+                                     logger=debug_print)
+    cid = factory.set_context(opt.context_file)
+    factory.set_rule(cid, [opt.rule_file])
+    server = ("localhost", UDP_PORT)
+    debug_print(1, "server:", server)
     sd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    schc_fragmenter_send(packet, sd, opt)
+    address = socket.getaddrinfo('127.0.0.1', UDP_PORT)[0][-1]
+    sd.bind(address)
 
-    
+    schc_fragmenter_recv(sd, sched, factory, opt)
+
 #---------------------------------------------------------------------------
 # Options
 
@@ -203,23 +219,32 @@ class empty_class:
 
 opt = empty_class()
 
+# For sender
 opt.context_file = "schc-test/example-rule/context-001.json"
 opt.rule_file = "schc-test/example-rule/fragment-rule-002.json"
 opt.l2_size = 6
 opt.dtag = 2
 opt.func_packet_loss = None
 opt.interval = 1
-debug_set_level(2)
+
+# For receiver
+opt.timer_t1 = DEFAULT_TIMER_T1
+opt.timer_t2 = DEFAULT_TIMER_T2
+opt.timer_t3 = DEFAULT_TIMER_T3
+opt.timer_t4 = DEFAULT_TIMER_T4
+opt.timer_t5 = DEFAULT_TIMER_T5
+
 
 impl_name = sys.implementation.name
-
 print("Python implementation: %s" % sys.implementation)
-packet = "0123456789" * 10
+
+debug_set_level(2)
 
 if "send" in sys.argv:
+    packet = "0123456789" * 10
     do_fragmenter_send(packet, opt)
 elif "recv" in sys.argv:
-    do_fragmenter_recv(packet, opt)
+    do_fragmenter_recv(opt)
 else: print("Not doing anything, please pass argument 'send' or 'recv'")
 
 #---------------------------------------------------------------------------
