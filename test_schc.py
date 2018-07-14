@@ -128,8 +128,7 @@ def schc_fragmenter_recv(s, sched, factory, opt):
         for i in factory.dig():
             debug_print(1, "defragmented message: [%s]" % i)
 
-        #try: #XXX
-        if True:   
+        try:
             #
             # if timeout happens recvfrom() here, go to exception.
             #
@@ -170,12 +169,12 @@ def schc_fragmenter_recv(s, sched, factory, opt):
             else:
                 debug_print(1, ret, ":", tx_obj)
 
-        #except Exception as e:
-        #    if "timeout" in repr(e):
-        #        debug_print(1, "timed out:", repr(e))
-        #    else:
-        #        debug_print(1, "Exception: [%s]" % repr(e))
-        #        debug_print(0, traceback.format_exc())
+        except Exception as e:
+            if "timeout" in repr(e):
+                debug_print(1, "timed out:", repr(e))
+            else:
+                debug_print(1, "Exception: [%s]" % repr(e))
+                debug_print(0, traceback.format_exc())
 
 #---------------------------------------------------------------------------
 
