@@ -30,6 +30,6 @@ native-build:
 
 run:
 	make native-build
-	cd ${M}/ports/unix && ./micropython ../../../test_schc.py
+	${M}/ports/unix/micropython test_schc.py
 
 #---------------------------------------------------------------------------
