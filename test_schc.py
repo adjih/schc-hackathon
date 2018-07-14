@@ -120,7 +120,9 @@ def schc_fragmenter_recv(s, sched, factory, opt):
         if not timer:
             s.setblocking(True)
         else:
-            s.settimeout(timer)
+            print("XXX: not setting timeout")
+            #s.settimeout(timer)
+            s.setblocking(True)
 
         # find a message for which a sender has sent all-1.
         for i in factory.dig():
@@ -208,7 +210,6 @@ def do_fragmenter_recv(opt):
     debug_print(1, "server:", server)
     sd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     address = get_sockaddr(*server)
-    #socket.getaddrinfo('127.0.0.1', UDP_PORT)[0][-1]
     sd.bind(address)
 
     schc_fragmenter_recv(sd, sched, factory, opt)
@@ -237,7 +238,6 @@ opt.timer_t2 = DEFAULT_TIMER_T2
 opt.timer_t3 = DEFAULT_TIMER_T3
 opt.timer_t4 = DEFAULT_TIMER_T4
 opt.timer_t5 = DEFAULT_TIMER_T5
-
 
 impl_name = sys.implementation.name
 print("Python implementation: %s" % sys.implementation)
