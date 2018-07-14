@@ -6,9 +6,9 @@ Repository made for the SCHC Hackathon (IETF 102, Montreal)
   * -> automatically clones schc-test (from Dominique)
   * -> automatically clones micropython (version for Linux)
 
-* make run
+* make run-send
   * -> automatically builds micropython-for-unix
-  * -> runs it with schc_test.py
+  * -> runs it with "schc_test.py send"
 
 Notes:
   micropython issues:

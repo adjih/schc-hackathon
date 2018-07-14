@@ -41,7 +41,7 @@ recv:
 	${M}/ports/unix/micropython test_schc.py recv
 
 
-run-micropython:
+run-upy:
 	${M}/ports/unix/micropython
 
 #---------------------------------------------------------------------------
