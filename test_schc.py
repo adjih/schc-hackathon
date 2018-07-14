@@ -174,7 +174,7 @@ def schc_fragmenter_recv(s, sched, factory, opt):
 
         except Exception as e:
             debug_print(1, "Exception: [%s]" % repr(e))
-            debug_print(0, traceback.format_exc())
+            sys.print_exception(e)
 
 #---------------------------------------------------------------------------
 
