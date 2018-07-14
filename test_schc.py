@@ -20,7 +20,7 @@ import copied_pyssched as ps
 # ./test-frag-client-udp.py 127.0.0.1 9999 --context-file="example-rule/context-001.json" --rule-file="example-rule/fragment-rule-002.json" --dtag=3 -I test/message.txt --l2-size=6 -dd
 
 RECV_UDP_ADDRESS = "127.0.0.1"
-RECV_UDP_PORT = 9999
+RECV_UDP_PORT = 9900
 
 SEND_UDP_ADDRESS = "127.0.0.1"
 SEND_UDP_PORT = 9999
@@ -75,7 +75,7 @@ def schc_fragmenter_send(msg, s, opt):
             debug_print(1, "packet dropped.")
         else:
             print("SEND:", tx_obj.packet)
-            address = socket.getaddrinfo('127.0.0.1', SEND_UDP_PORT)[0][-1]
+            address = get_sockaddr(RECV_UDP_ADDRESS, RECV_UDP_PORT)
             s.sendto(tx_obj.packet, address)
             debug_print(1, "sent  :", tx_obj.dump())
             debug_print(2, "hex   :", tx_obj.full_dump())
@@ -119,7 +119,9 @@ def schc_fragmenter_recv(s, sched, factory, opt):
         if not timer:
             s.setblocking(True)
         else:
-            s.settimeout(timer)
+            print("XXX: not setting timeout")
+            #s.settimeout(timer)
+            s.setblocking(True)
 
         # find a message for which a sender has sent all-1.
         for i in factory.dig():
@@ -187,6 +189,8 @@ def do_fragmenter_send(packet_str, opt):
     else: packet = bytearray(packet_str, "utf-8")
 
     sd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    address = get_sockaddr(SEND_UDP_ADDRESS, SEND_UDP_PORT)
+    sd.bind(address)    
     schc_fragmenter_send(packet, sd, opt)
 
 
@@ -201,10 +205,10 @@ def do_fragmenter_recv(opt):
                                      logger=debug_print)
     cid = factory.set_context(opt.context_file)
     factory.set_rule(cid, [opt.rule_file])
-    server = ("localhost", RECV_UDP_PORT)
+    server = (RECV_UDP_ADDRESS, RECV_UDP_PORT)
     debug_print(1, "server:", server)
     sd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    address = socket.getaddrinfo('127.0.0.1', RECV_UDP_PORT)[0][-1]
+    address = get_sockaddr(*server)
     sd.bind(address)
 
     schc_fragmenter_recv(sd, sched, factory, opt)
@@ -225,7 +229,7 @@ opt.rule_file = "schc-test/example-rule/fragment-rule-002.json"
 opt.l2_size = 6
 opt.dtag = 2
 opt.func_packet_loss = None
-opt.interval = 1
+opt.interval = 0.1
 
 # For receiver
 opt.timer_t1 = DEFAULT_TIMER_T1
@@ -233,7 +237,6 @@ opt.timer_t2 = DEFAULT_TIMER_T2
 opt.timer_t3 = DEFAULT_TIMER_T3
 opt.timer_t4 = DEFAULT_TIMER_T4
 opt.timer_t5 = DEFAULT_TIMER_T5
-
 
 impl_name = sys.implementation.name
 print("Python implementation: %s" % sys.implementation)
