@@ -15,7 +15,7 @@ except: import usocket as socket
 try: import time
 except: import utime as time
 #import pyssched as ps
-import copied_sched as ps
+import copied_pyssched as ps
 
 # ./test-frag-client-udp.py 127.0.0.1 9999 --context-file="example-rule/context-001.json" --rule-file="example-rule/fragment-rule-002.json" --dtag=3 -I test/message.txt --l2-size=6 -dd
 

@@ -2,9 +2,12 @@
 '''
 derived from python2.7/sched.py
 '''
-import heapq
-import time
-from collections import namedtuple
+try: import heapq
+except: import copied_heapq
+try: import time
+except: import utime as time
+try: from collections import namedtuple
+except: from ucollections import namedtuple
 
 Event = namedtuple('Event', 'time, priority, action, argument')
 
