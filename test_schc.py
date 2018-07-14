@@ -14,6 +14,7 @@ try: import socket
 except: import usocket as socket
 try: import time
 except: import utime as time
+import uselect
 #import pyssched as ps
 import copied_pyssched as ps
 
@@ -119,7 +120,12 @@ def schc_fragmenter_recv(s, sched, factory, opt):
         if not timer:
             s.setblocking(True)
         else:
-            s.settimeout(timer)
+            # Wait for some data first
+            poller = uselect.poll()
+            poller.register(s, uselect.POLLIN)
+            res = poller.poll(int(timer * 1000)) # timer is in seconds
+            if not res:
+                debug_print(1, "timed out")
 
         # find a message for which a sender has sent all-1.
         for i in factory.dig():
@@ -130,7 +136,7 @@ def schc_fragmenter_recv(s, sched, factory, opt):
             # if timeout happens recvfrom() here, go to exception.
             #
             rx_data, peer = s.recvfrom(DEFAULT_RECV_BUFSIZE)
-            debug_print(1, "message from:", peer)
+            debug_print(1, "message (size %u) from: %s" % (len(rx_data), peer))
             #
             # XXX here, should find a context for the peer.
             #
@@ -167,11 +173,8 @@ def schc_fragmenter_recv(s, sched, factory, opt):
                 debug_print(1, ret, ":", tx_obj)
 
         except Exception as e:
-            if "timeout" in repr(e):
-                debug_print(1, "timed out:", repr(e))
-            else:
-                debug_print(1, "Exception: [%s]" % repr(e))
-                debug_print(0, traceback.format_exc())
+            debug_print(1, "Exception: [%s]" % repr(e))
+            debug_print(0, traceback.format_exc())
 
 #---------------------------------------------------------------------------
 
