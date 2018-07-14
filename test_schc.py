@@ -75,7 +75,7 @@ def schc_fragmenter_send(msg, s, opt):
             debug_print(1, "packet dropped.")
         else:
             print("SEND:", tx_obj.packet)
-            address = socket.getaddrinfo('127.0.0.1', UDP_PORT)[0][-1]
+            address = socket.getaddrinfo('127.0.0.1', SEND_UDP_PORT)[0][-1]
             s.sendto(tx_obj.packet, address)
             debug_print(1, "sent  :", tx_obj.dump())
             debug_print(2, "hex   :", tx_obj.full_dump())
@@ -201,10 +201,10 @@ def do_fragmenter_recv(opt):
                                      logger=debug_print)
     cid = factory.set_context(opt.context_file)
     factory.set_rule(cid, [opt.rule_file])
-    server = ("localhost", UDP_PORT)
+    server = ("localhost", RECV_UDP_PORT)
     debug_print(1, "server:", server)
     sd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    address = socket.getaddrinfo('127.0.0.1', UDP_PORT)[0][-1]
+    address = socket.getaddrinfo('127.0.0.1', RECV_UDP_PORT)[0][-1]
     sd.bind(address)
 
     schc_fragmenter_recv(sd, sched, factory, opt)
