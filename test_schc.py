@@ -19,6 +19,9 @@ except: import uselect as select
 #import pyssched as ps
 import copied_pyssched as ps
 
+# XXX THIS ISN'T FINALIZED
+import _thread
+
 # ./test-frag-client-udp.py 127.0.0.1 9999 --context-file="example-rule/context-001.json" --rule-file="example-rule/fragment-rule-002.json" --dtag=3 -I test/message.txt --l2-size=6 -dd
 
 RECV_UDP_ADDRESS = "127.0.0.1"
@@ -280,18 +283,39 @@ print("Python implementation: %s" % sys.implementation)
 
 debug_set_level(2)
 
-def run(*argv):
-    if "send" in argv:
-        packet = "0123456789" + "".join([chr(ord('A')+i) for i in range(26)])
-        do_fragmenter_send(packet, opt)
-    elif "recv" in argv:
-        do_fragmenter_recv(opt)
-    else: print("**** Not doing anything, please pass argument 'send' or 'recv'")
 
+def send():
+    packet = "0123456789" + "".join([chr(ord('A')+i) for i in range(26)])
+    do_fragmenter_send(packet, opt)
+    send_ran = True
+def recv():
+    do_fragmenter_recv(opt)
+    recv_ran = True
+
+def send_recv():
+    send_ran = False
+    recv_ran = False
+
+    recv_thread = _thread.start_new_thread(recv, ())
+    send_thread = _thread.start_new_thread(send, ())
+
+    while not recv_ran or not send_ran:
+        time.sleep_ms(100)
+
+
+def run(*argv):
+    if "send_recv" in argv:
+        send_recv()
+    elif "send" in argv:
+        send()
+    elif "recv" in argv:
+        recv()
+    else: print("**** Not doing anything, please pass argument 'send' or 'recv'")
 
 if __name__ == "__main__":
     run(*sys.argv)
 else:
-    print("**** Running as a module, not starting anything, please use run('send') or run('recv')")
+    print("""**** Running as a module, not starting anything, please use run('send') or run('recv'),
+                  or run('send_recv')""")
 
 #---------------------------------------------------------------------------
