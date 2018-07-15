@@ -19,7 +19,7 @@ schc-test:
 
 schc-test-cedric:
 	git clone --recursive https://github.com/adjih/schc-test \
-               -b cedric-hackathon102 schc-test-cedric
+               -b cedric-pycom schc-test-cedric
 
 ${M}:
 	git clone ${GITURL_MICROPYTHON}
