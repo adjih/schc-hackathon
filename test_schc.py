@@ -245,7 +245,7 @@ print("Python implementation: %s" % sys.implementation)
 debug_set_level(2)
 
 if "send" in sys.argv:
-    packet = "0123456789" * 10
+    packet = "0123456789" + "".join([chr(ord('A')+i) for i in range(26)])
     do_fragmenter_send(packet, opt)
 elif "recv" in sys.argv:
     do_fragmenter_recv(opt)

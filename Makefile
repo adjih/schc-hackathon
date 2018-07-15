@@ -45,3 +45,30 @@ run-upy:
 	${M}/ports/unix/micropython
 
 #---------------------------------------------------------------------------
+
+# S=schc-test-cedric
+# SCHC_SOURCES = $(wildcard ${S}/schc*.py) \
+#                $(wildcard ${S}/micro_enum/[a-z]*.py) \
+#                $(wildcard ${S}/pybinutil/[a-z]*.py) \
+#                ${S}/debug_print.py
+# PYFILELIST=test_schc.py
+
+# LINKDIR=project/link
+
+# link:
+# 	test -e ${LINKDIR} || mkdir ${LINKDIR}
+# 	for i in ${SCHC_SOURCES} ${PYFILELIST} ; do \
+#               (cd ${LINKDIR} && ln -vsf ../../$$i .) ; \
+#         done
+
+#---------------------------------------------------------------------------
+
+DEVICE1 ?= /dev/ttyACM0
+DEVICE2 ?= /dev/ttyACM1
+-include Makefile.local # override DEVICE1, DEVICE2 here
+
+link:
+	./gen-link-dir.sh sending ${DEVICE1} main-sending.py
+	./gen-link-dir.sh receiving ${DEVICE2} main-receiving.py
+
+#---------------------------------------------------------------------------

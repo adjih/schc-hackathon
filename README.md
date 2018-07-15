@@ -23,7 +23,13 @@ How to run both:
 * make send
   * -> runs micropython with "schc_test.py send"
   * This creates a sender for fragments which sends a large packet
-  
+
+----
+
+* make link
+  * this creates a lots of links in project/, the idea is that the project/
+  repository can be synchronized with a pycom
+
 ----
 
 Notes:
@@ -32,7 +38,8 @@ Notes:
 In micropython, bytearray accepts only one argument, whereas in cpython
 you must have 2 arguments (e.g. with the encoding), if the first is a str.
 
-```$ ./micropython/ports/unix/micropython -c 'bytearray("aaa", "utf-8")'
+```
+$ ./micropython/ports/unix/micropython -c 'bytearray("aaa", "utf-8")'
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: function expected at most 1 arguments, got 2
@@ -40,3 +47,4 @@ TypeError: function expected at most 1 arguments, got 2
 $ python3 -c 'bytearray("aaa", "utf-8")'
 $ # fine
 ```
+
