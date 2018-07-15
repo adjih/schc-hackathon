@@ -61,12 +61,26 @@ run-upy:
 
 #---------------------------------------------------------------------------
 
-DEVICE1 ?= /dev/ttyACM0
-DEVICE2 ?= /dev/ttyACM1
--include Makefile.local # override DEVICE1, DEVICE2 here
+DEVICE1_TTY ?= /dev/ttyACM0
+DEVICE2_TTY ?= /dev/ttyACM1
+-include Makefile.local # override DEVICE1_TTY, DEVICE2_TTY here
 
 link:
-	./gen-link-dir.sh sending ${DEVICE1} main-sending.py
-	./gen-link-dir.sh receiving ${DEVICE2} main-receiving.py
+	./gen-link-dir.sh sending ${DEVICE1_TTY} main-sending.py
+	./gen-link-dir.sh receiving ${DEVICE2_TYY} main-receiving.py
+
+#---------------------------------------------------------------------------
+
+link-send: native-build
+	cd project-sending && ../${M}/ports/unix/micropython test_schc.py send
+
+link-recv: native-build
+	cd project-receiving && ../${M}/ports/unix/micropython test_schc.py recv
+
+#---------------------------------------------------------------------------
+
+cpy-send: ; python3 test_schc.py send
+
+cpy-recv: ; python3 test_schc.py recv
 
 #---------------------------------------------------------------------------
