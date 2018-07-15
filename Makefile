@@ -38,6 +38,8 @@ send: native-build
 recv: native-build
 	${M}/ports/unix/micropython test_schc.py recv
 
+send_recv: native-build
+	${M}/ports/unix/micropython test_schc.py send_recv
 
 run-upy:
 	${M}/ports/unix/micropython
