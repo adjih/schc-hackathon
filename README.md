@@ -62,4 +62,4 @@ $ # fine
 
 There are many others:
 * Globally, micropython for unix defines some version of modules with other names like "uXXX", e.g. usocket instead of socket, utime for time, etc.
-* micropython for Pycom however, in many cases, keeps the correct names, or implement missing modules
+* micropython for Pycom however, in many cases, keeps the Python names for "uXXX" modules (even if they are incomplete), or implement missing modules
