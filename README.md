@@ -48,6 +48,6 @@ Notes:
   older micropython issues: in micropython, bytearray used tp accept only one argument, whereas in cpython
 you must have 2 arguments (e.g. with the encoding), if the first is a str; should be fine now.
 
-There are some other adaptation:
+There is some adaptation needed:
 * Globally, micropython for unix defines some version of modules with other names like "uXXX", e.g. usocket instead of socket, utime for time, etc., when they don't implement the full functionality of CPython modules
 * micropython for Pycom however, in many cases, re-use the Python names for "uXXX" modules (even if they are incomplete), or implement missing modules
