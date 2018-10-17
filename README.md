@@ -45,21 +45,9 @@ Alternate after `make link`
 ----
 
 Notes:
-  micropython issues:
-  
-In micropython, bytearray accepts only one argument, whereas in cpython
-you must have 2 arguments (e.g. with the encoding), if the first is a str.
+  older micropython issues: in micropython, bytearray used tp accept only one argument, whereas in cpython
+you must have 2 arguments (e.g. with the encoding), if the first is a str; should be fine now.
 
-```
-$ ./micropython/ports/unix/micropython -c 'bytearray("aaa", "utf-8")'
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: function expected at most 1 arguments, got 2
-
-$ python3 -c 'bytearray("aaa", "utf-8")'
-$ # fine
-```
-
-There are many others:
-* Globally, micropython for unix defines some version of modules with other names like "uXXX", e.g. usocket instead of socket, utime for time, etc.
-* micropython for Pycom however, in many cases, keeps the Python names for "uXXX" modules (even if they are incomplete), or implement missing modules
+There are some other adaptation:
+* Globally, micropython for unix defines some version of modules with other names like "uXXX", e.g. usocket instead of socket, utime for time, etc., when they don't implement the full functionality of CPython modules
+* micropython for Pycom however, in many cases, re-use the Python names for "uXXX" modules (even if they are incomplete), or implement missing modules
