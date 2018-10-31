@@ -2,8 +2,8 @@
 
 Repository made for the SCHC Hackathon (IETF 103, Bangkok - follow-up of IETF 102, Montreal)
 
-* make
-  (or make repos)
+* `make`
+  (or `make repos`)
   * -> automatically clones micropython (version for Linux)
 
 ----
