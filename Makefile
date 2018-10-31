@@ -11,12 +11,15 @@ GITURL_MICROPYTHON?=https://github.com/${GITPLACE}/micropython
 GITBRANCH_MICROPYTHON?=hackathon-103
 M=micropython
 
+GITURL_OPENSCHC?=https://github.com/${GITPLACE}/openschc
+GITBRANCH_OPENSCHC?=hackathon-103
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
 all: repos
 
-repos: ${M}
+repos: ${M} openschc
 
 #---------------------------------------------------------------------------
 # Micropython
@@ -37,9 +40,16 @@ run-upy:
 	${M}/ports/unix/micropython
 
 #---------------------------------------------------------------------------
+# openschc
+
+openschc:
+	git clone ${GITURL_OPENSCHC} -b ${GITBRANCH_OPENSCHC}
+	cd ${M} && git submodule update --init
+
+#---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
-# Mac-OS, before make native-build (XXX: problem, as libffi is cloned?)
+# Note: Mac-OS, before make native-build (XXX: problem, as libffi is cloned?)
 # export PKG_CONFIG_PATH=/usr/local/Cellar/libffi/3.2.1/lib/pkgconfig
 
 #---------------------------------------------------------------------------
@@ -54,62 +64,5 @@ schc-test:
 schc-test-cedric:
 	git clone --recursive https://github.com/adjih/schc-test \
                -b cedric-pycom schc-test-cedric
-
-#---------------------------------------------------------------------------
-
-send: native-build
-	${M}/ports/unix/micropython test_schc.py send
-
-recv: native-build
-	${M}/ports/unix/micropython test_schc.py recv
-
-send_recv: native-build
-	${M}/ports/unix/micropython test_schc.py send_recv
-
-#---------------------------------------------------------------------------
-
-# S=schc-test-cedric
-# SCHC_SOURCES = $(wildcard ${S}/schc*.py) \
-#                $(wildcard ${S}/micro_enum/[a-z]*.py) \
-#                $(wildcard ${S}/pybinutil/[a-z]*.py) \
-#                ${S}/debug_print.py
-# PYFILELIST=test_schc.py
-
-# LINKDIR=project/link
-
-# link:
-# 	test -e ${LINKDIR} || mkdir ${LINKDIR}
-# 	for i in ${SCHC_SOURCES} ${PYFILELIST} ; do \
-#               (cd ${LINKDIR} && ln -vsf ../../$$i .) ; \
-#         done
-
-#---------------------------------------------------------------------------
-
-#GITURL_PYCOM_MICROPYTHON?=https://gitlab.inria.fr/adjih/pycom-micropython -b module-libschic
-#BOARD?=LOPY4
-
-#---------------------------------------------------------------------------
-
-DEVICE1_TTY ?= /dev/ttyACM0
-DEVICE2_TTY ?= /dev/ttyACM1
--include Makefile.local # override DEVICE1_TTY, DEVICE2_TTY here
-
-link:
-	./gen-link-dir.sh sending ${DEVICE1_TTY} main-sending.py
-	./gen-link-dir.sh receiving ${DEVICE2_TYY} main-receiving.py
-
-#---------------------------------------------------------------------------
-
-link-send: native-build
-	cd project-sending && ../${M}/ports/unix/micropython test_schc.py send
-
-link-recv: native-build
-	cd project-receiving && ../${M}/ports/unix/micropython test_schc.py recv
-
-#---------------------------------------------------------------------------
-
-cpy-send: ; python3 test_schc.py send
-
-cpy-recv: ; python3 test_schc.py recv
 
 #---------------------------------------------------------------------------
