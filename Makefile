@@ -1,18 +1,51 @@
 #---------------------------------------------------------------------------
+# Cedric Adjih - 2018
+#---------------------------------------------------------------------------
 
-#GITURL_PYCOM_MICROPYTHON?=https://gitlab.inria.fr/adjih/pycom-micropython -b module-libschic
-#BOARD?=LOPY4
+# Optionally put information in this file to override options
+-include Makefile.local
 
-GITURL_MICROPYTHON?=https://github.com/micropython/micropython
+GITPLACE=openschc
+
+GITURL_MICROPYTHON?=https://github.com/${GITPLACE}/micropython
+GITBRANCH_MICROPYTHON?=hackathon-103
 M=micropython
 
+#---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
 all: repos
 
+repos: ${M}
+
+#---------------------------------------------------------------------------
+# Micropython
+
+${M}:
+	git clone ${GITURL_MICROPYTHON}
+	cd ${M} && git submodule update --init
+
+native-build:
+	make ${M}
+	cd ${M}/ports/unix && make axtls
+	cd ${M}/ports/unix && make V=1
+
+test-upy:
+	${M}/ports/unix/micropython testupy.py
+
+run-upy:
+	${M}/ports/unix/micropython
+
+#---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
-repos: schc-test schc-test-cedric ${M}
+
+
+#---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+# Hackathon IETF 102 (Montreal)
+
+repos-102: schc-test schc-test-cedric ${M}
 
 schc-test:
 	git clone --recursive https://github.com/dbarthel-ol/schc-test
@@ -21,16 +54,7 @@ schc-test-cedric:
 	git clone --recursive https://github.com/adjih/schc-test \
                -b cedric-pycom schc-test-cedric
 
-${M}:
-	git clone ${GITURL_MICROPYTHON}
-	cd ${M} && git submodule update --init
-
 #---------------------------------------------------------------------------
-
-native-build:
-	make ${M}
-	cd ${M}/ports/unix && make axtls
-	cd ${M}/ports/unix && make V=1
 
 send: native-build
 	${M}/ports/unix/micropython test_schc.py send
@@ -40,9 +64,6 @@ recv: native-build
 
 send_recv: native-build
 	${M}/ports/unix/micropython test_schc.py send_recv
-
-run-upy:
-	${M}/ports/unix/micropython
 
 #---------------------------------------------------------------------------
 
@@ -60,6 +81,11 @@ run-upy:
 # 	for i in ${SCHC_SOURCES} ${PYFILELIST} ; do \
 #               (cd ${LINKDIR} && ln -vsf ../../$$i .) ; \
 #         done
+
+#---------------------------------------------------------------------------
+
+#GITURL_PYCOM_MICROPYTHON?=https://gitlab.inria.fr/adjih/pycom-micropython -b module-libschic
+#BOARD?=LOPY4
 
 #---------------------------------------------------------------------------
 
