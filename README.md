@@ -12,4 +12,4 @@ How to run:
 
 * `make test-upy`
   * -> runs micropython with "testupy.py"
-  * This just prints one string
+  * When it works, it just prints one string

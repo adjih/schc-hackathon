@@ -22,7 +22,7 @@ repos: ${M}
 # Micropython
 
 ${M}:
-	git clone ${GITURL_MICROPYTHON}
+	git clone ${GITURL_MICROPYTHON} -b ${GITBRANCH_MICROPYTHON}
 	cd ${M} && git submodule update --init
 
 native-build:
@@ -30,8 +30,8 @@ native-build:
 	cd ${M}/ports/unix && make axtls
 	cd ${M}/ports/unix && make V=1
 
-test-upy:
-	${M}/ports/unix/micropython testupy.py
+test-upy: native-build
+	${M}/ports/unix/micropython test-upy.py
 
 run-upy:
 	${M}/ports/unix/micropython
@@ -39,7 +39,8 @@ run-upy:
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
-
+# Mac-OS, before make native-build (XXX: problem, as libffi is cloned?)
+# export PKG_CONFIG_PATH=/usr/local/Cellar/libffi/3.2.1/lib/pkgconfig
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
