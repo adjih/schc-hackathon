@@ -5,14 +5,15 @@
 # Optionally put information in this file to override options
 -include Makefile.local
 
-GITPLACE=openschc
+GITPLACE?=openschc
+GITPLACE_UPY?=openschc
 
-GITURL_MICROPYTHON?=https://github.com/${GITPLACE}/micropython
-GITBRANCH_MICROPYTHON?=hackathon-103
+GITURL_MICROPYTHON?=https://github.com/${GITPLACE_UPY}/micropython
+GITBRANCH_MICROPYTHON?=hackathon103
 M=micropython
 
 GITURL_OPENSCHC?=https://github.com/${GITPLACE}/openschc
-GITBRANCH_OPENSCHC?=hackathon-103
+GITBRANCH_OPENSCHC?=hackathon103
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
