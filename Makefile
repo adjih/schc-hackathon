@@ -5,7 +5,7 @@
 # Optionally put information in this file to override options
 -include Makefile.local
 
-GITPLACE?=openschc
+GITPLACE?=PLEASE-SET-VARIABLE-GITPLACE
 GITPLACE_UPY?=openschc
 
 GITURL_MICROPYTHON?=https://github.com/${GITPLACE_UPY}/micropython
@@ -14,6 +14,7 @@ M=micropython
 
 GITURL_OPENSCHC?=https://github.com/${GITPLACE}/openschc
 GITBRANCH_OPENSCHC?=hackathon103
+GITURL_OPENSCHC_OFFICIAL=https://github.com/openschc
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
@@ -34,8 +35,21 @@ native-build:
 	cd ${M}/ports/unix && make axtls
 	cd ${M}/ports/unix && make V=1
 
-test-upy: native-build
-	${M}/ports/unix/micropython test-upy.py
+test-upy:
+	test -e ${M}/ports/unix/micropython || make native-build
+	${M}/ports/unix/micropython test_upy.py
+
+test-oschc:
+	test -e ${M}/ports/unix/micropython || make native-build
+	cd openschc/src && ../../${M}/ports/unix/micropython test_oschc.py
+
+test-schc-test-send:
+	test -e ${M}/ports/unix/micropython || make native-build
+	${M}/ports/unix/micropython old/test_schc.py send
+
+test-schc-test-recv:
+	test -e ${M}/ports/unix/micropython || make native-build
+	${M}/ports/unix/micropython old/test_schc.py recv
 
 run-upy:
 	${M}/ports/unix/micropython
@@ -45,25 +59,17 @@ run-upy:
 
 openschc:
 	git clone ${GITURL_OPENSCHC} -b ${GITBRANCH_OPENSCHC}
-	cd ${M} && git submodule update --init
+
+ensure-remote-osc:
+	git remote | grep -q '^osc$$' \
+           || git remote add osc ${GITURL_OPENSCHC_OFFICIAL}/schc-hackathon
+	cd openschc && { \
+	   git remote | grep -q '^osc$$' \
+              || git remote add osc ${GITURL_OPENSCHC_OFFICIAL}/openschc ; }
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
 # Note: Mac-OS, before make native-build (XXX: problem, as libffi is cloned?)
 # export PKG_CONFIG_PATH=/usr/local/Cellar/libffi/3.2.1/lib/pkgconfig
-
-#---------------------------------------------------------------------------
-#---------------------------------------------------------------------------
-# Hackathon IETF 102 (Montreal)
-
-repos-102: schc-test schc-test-cedric ${M}
-
-schc-test:
-	git clone --recursive https://github.com/dbarthel-ol/schc-test
-
-schc-test-cedric:
-	git clone --recursive https://github.com/adjih/schc-test \
-               -b cedric-pycom schc-test-cedric
-
 #---------------------------------------------------------------------------
