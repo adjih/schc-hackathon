@@ -9,8 +9,11 @@ GITPLACE?=PLEASE-SET-VARIABLE-GITPLACE
 GITPLACE_UPY?=openschc
 
 GITURL_MICROPYTHON?=https://github.com/${GITPLACE_UPY}/micropython
+GITURL_MICROPYTHON_LIB?=https://github.com/${GITPLACE_UPY}/micropython-lib
 GITBRANCH_MICROPYTHON?=hackathon103
+GITBRANCH_MICROPYTHON_LIB?=hackathon103
 M=micropython
+MLIB=micropython-lib
 
 GITURL_OPENSCHC?=https://github.com/${GITPLACE}/openschc
 GITBRANCH_OPENSCHC?=hackathon103
@@ -21,7 +24,7 @@ GITURL_OPENSCHC_OFFICIAL=https://github.com/openschc
 
 all: repos
 
-repos: ${M} openschc
+repos: ${M} ${MLIB} openschc
 
 #---------------------------------------------------------------------------
 # Micropython
@@ -29,6 +32,9 @@ repos: ${M} openschc
 ${M}:
 	git clone ${GITURL_MICROPYTHON} -b ${GITBRANCH_MICROPYTHON}
 	cd ${M} && git submodule update --init
+
+${MLIB}:
+	git clone ${GITURL_MICROPYTHON_LIB} -b ${GITBRANCH_MICROPYTHON_LIB}
 
 native-build:
 	make ${M}
