@@ -6,20 +6,22 @@ Repository made for the SCHC Hackathon (IETF 103, Bangkok - follow-up of IETF 10
 
 ## "Installing"
 
-How to "install":
-* Either fork [schc-hackathon](https://github.com/openschc/schc-hackathon) and [openschc/openschc](https://github.com/openschc/openschc) in one github account and use `GITPLACE=<ACCOUNT>`. The used branch is `hackathon103`.
+How to "install": you first need to decide your `<git-place>` e.g. the place where there are your files.
+* Either fork [schc-hackathon](https://github.com/openschc/schc-hackathon) and [openschc/openschc](https://github.com/openschc/openschc) in one github account and use `GITPLACE=<account>`. The used branch is `hackathon103`.
 * or do nothing and use `GITPLACE=openschc` below (faster, but later, you will probably need to manually set up remotes to push your changes)
 
 Then
 
-* `make GITPLACE=<git-base-name>`
+* Clone schc-hackathon (branch hackathon103):
+  * `git clone https://github.com/<git-place>/schc-hackathon -b hackathon103`
+* `cd schc-hackathon && make GITPLACE=<git-place>`
   * -> automatically clones micropython (version for Linux/MacOS)
   * -> automatically sets git add remote `osc` in `schc-hackathon` and `openschc`
 
 
 ----
 
-## "Running"
+## Running
 
 * `make test-upy`
   * -> runs micropython with `test_upy.py`
@@ -39,3 +41,13 @@ Then
   * This creates a sender for fragments which sends a large packet
   * (needs to be updated due to repository changes)
 
+----
+
+## Directory tree
+
+|schc-hackathon | this meta-repository|
+|-|-|
+|schc-hackathon/openschc | where `openschc` is straighforwardly cloned |
+|schc-hackathon/micropython | where `micropython` is straighforwardly cloned |
+|schc-hackathon/openschc/src | where **code for the "new" openschc will be put** |
+|schc-hackathon/openschc/src/schctest | where there is a full copy of **the last version of [schc-test](https://github.com/tanupoo/schc-test)** before hackathon103 with submodules |
