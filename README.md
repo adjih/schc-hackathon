@@ -30,6 +30,7 @@ Then
 * `make test-upy`
   * -> runs micropython with `test_upy.py`
   * When it works, it just prints one string
+  * on a Mac, you may get an error 'ffi.h' not being found. In this case, a hack is to install libffi manually, then do 'export PKG_CONFIG_PATH=/usr/local/Cellar/libffi/3.2.1/lib/pkgconfig' and try again :-)
 
 * `make test-oschc`
   * -> runs micropython with `openschc/src/test_oschc.py` (that's openschc)
