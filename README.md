@@ -39,12 +39,12 @@ Then
 * `make test-schc-test-recv`
   * -> runs micropython with "old/test_schc.py recv" (that's schc-test)
   * This creates a receiver for fragments
-  * (needs to be updated due to repository changes)
+  * (not working for now, needs to be updated due to repository changes)
 
 * `make test-schc-test-send`
   * -> runs micropython with "old/test_schc.py send" (that's schc-test)
   * This creates a sender for fragments which sends a large packet
-  * (needs to be updated due to repository changes)
+  * (not working for now, needs to be updated due to repository changes)
 
 ----
 
