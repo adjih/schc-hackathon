@@ -6,17 +6,21 @@ Repository made for the SCHC Hackathon (IETF 103, Bangkok - follow-up of IETF 10
 
 ## "Installing"
 
-How to "install": you first need to decide your `<git-place>` e.g. the place where there are your files.
-* Either fork [schc-hackathon](https://github.com/openschc/schc-hackathon) and [openschc/openschc](https://github.com/openschc/openschc) in one github account and use `GITPLACE=<account>`. The used branch is `hackathon103`.
-* or do nothing and use `GITPLACE=openschc` below (faster, but later, you will probably need to manually set up remotes to push your changes)
+How to "install": you first need to decide on your `<git-place>` i.e. the location of the GitHub repository you are going to work on.
+* Either use your own GitHub acccount. For this:
+  - fork [openschc/schc-hackathon](https://github.com/openschc/schc-hackathon) into your GitHub account.
+  - fork [openschc/openschc](https://github.com/openschc/openschc) into your GitHub account.
+  - in the instructions below, replace `<git-place>` with your GitHub account name.
+  - the branch used is `hackathon103`.
+* or do nothing and replace `<git-place>` with `openschc` below (faster, but later, you will probably need to manually set up remotes to push your changes to your own GitHub repo)
 
 Then
 
 * Clone schc-hackathon (branch hackathon103):
   * `git clone https://github.com/<git-place>/schc-hackathon -b hackathon103`
 * `cd schc-hackathon && make GITPLACE=<git-place>`
-  * -> automatically clones micropython (version for Linux/MacOS)
-  * -> automatically sets git add remote `osc` in `schc-hackathon` and `openschc`
+  * -> this will automatically clone micropython (Linux/MacOS version)
+  * -> this will automatically set git add remote `osc` in `schc-hackathon` and `openschc`
 
 
 ----
