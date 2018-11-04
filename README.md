@@ -56,3 +56,15 @@ Then
 |schc-hackathon/micropython | where `micropython` is straighforwardly cloned |
 |schc-hackathon/openschc/src | where **code for the "new" openschc will be put** |
 |schc-hackathon/openschc/src/schctest | where there is a full copy of **the last version of [schc-test](https://github.com/tanupoo/schc-test)** before hackathon103 with submodules |
+
+
+---
+
+## Merge forks
+
+   
+    git remote add osc https://github.com/openschc/openschc
+   	git fetch osc
+   	git branch
+    git merge osc/hackathon103
+
