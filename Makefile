@@ -47,7 +47,7 @@ test-upy:
 
 test-oschc:
 	test -e ${M}/ports/unix/micropython || make native-build
-	cd openschc/src && ../../${M}/ports/unix/micropython test_oschc.py
+	cd openschc/src && ../../${M}/ports/unix/micropython test_newschc.py
 
 test-schc-test-send:
 	test -e ${M}/ports/unix/micropython || make native-build
